@@ -15,4 +15,33 @@ link_module() {
   stow_module_if_needed "$MODULE_DIR"
 }
 
+uninstall_module() {
+  unstow_module_if_needed "$MODULE_DIR"
+  remove_brew_cask_if_present docker
+}
+
+status_module() {
+  status_init
+
+  if brew_cask_installed docker || [[ -d "/Applications/Docker.app" ]]; then
+    STATUS_INSTALLED="yes"
+    STATUS_NOTE="Docker Desktop is installed."
+  else
+    STATUS_INSTALLED="no"
+    STATUS_NOTE="Docker Desktop is not installed yet."
+  fi
+
+  if module_has_stow_payload "$MODULE_DIR"; then
+    if module_payload_linked "$MODULE_DIR"; then
+      STATUS_LINKED="yes"
+    else
+      STATUS_LINKED="no"
+    fi
+  else
+    STATUS_LINKED="na"
+  fi
+
+  status_emit
+}
+
 module_dispatch "$@"

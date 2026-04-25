@@ -15,4 +15,30 @@ link_module() {
   stow_module_if_needed "$MODULE_DIR"
 }
 
+uninstall_module() {
+  remove_managed_block "$HOME/.zshrc" "fzf-zsh"
+  unstow_module_if_needed "$MODULE_DIR"
+  remove_brew_formula_if_present fzf
+}
+
+status_module() {
+  status_init
+
+  if brew_formula_installed fzf; then
+    STATUS_INSTALLED="yes"
+    STATUS_NOTE="fzf is installed."
+  else
+    STATUS_INSTALLED="no"
+    STATUS_NOTE="fzf is not installed yet."
+  fi
+
+  if managed_block_present "$HOME/.zshrc" "fzf-zsh"; then
+    STATUS_LINKED="yes"
+  else
+    STATUS_LINKED="no"
+  fi
+
+  status_emit
+}
+
 module_dispatch "$@"

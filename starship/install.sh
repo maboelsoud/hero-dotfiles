@@ -15,4 +15,30 @@ link_module() {
   stow_module_if_needed "$MODULE_DIR"
 }
 
+uninstall_module() {
+  remove_managed_block "$HOME/.zshrc" "starship-init"
+  unstow_module_if_needed "$MODULE_DIR"
+  remove_brew_formula_if_present starship
+}
+
+status_module() {
+  status_init
+
+  if brew_formula_installed starship; then
+    STATUS_INSTALLED="yes"
+    STATUS_NOTE="Starship is installed."
+  else
+    STATUS_INSTALLED="no"
+    STATUS_NOTE="Starship is not installed yet."
+  fi
+
+  if managed_block_present "$HOME/.zshrc" "starship-init"; then
+    STATUS_LINKED="yes"
+  else
+    STATUS_LINKED="no"
+  fi
+
+  status_emit
+}
+
 module_dispatch "$@"

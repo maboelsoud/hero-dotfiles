@@ -20,4 +20,37 @@ link_module() {
   stow_module_if_needed "$MODULE_DIR"
 }
 
+uninstall_module() {
+  remove_managed_block "$HOME/.zshrc" "fnm-init"
+  unstow_module_if_needed "$MODULE_DIR"
+  remove_brew_formula_if_present fnm
+  warn "Any Node.js versions already installed by fnm were left in place."
+}
+
+status_module() {
+  status_init
+
+  if command -v fnm >/dev/null 2>&1; then
+    eval "$(fnm env --shell bash 2>/dev/null || true)"
+    if [[ "$(fnm current 2>/dev/null || printf 'system')" != "system" ]]; then
+      STATUS_INSTALLED="yes"
+      STATUS_NOTE="fnm and a Node.js runtime are installed."
+    else
+      STATUS_INSTALLED="no"
+      STATUS_NOTE="fnm is installed, but no Node.js runtime is active."
+    fi
+  else
+    STATUS_INSTALLED="no"
+    STATUS_NOTE="fnm is not installed yet."
+  fi
+
+  if managed_block_present "$HOME/.zshrc" "fnm-init"; then
+    STATUS_LINKED="yes"
+  else
+    STATUS_LINKED="no"
+  fi
+
+  status_emit
+}
+
 module_dispatch "$@"
