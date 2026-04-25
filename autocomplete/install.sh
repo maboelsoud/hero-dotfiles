@@ -11,7 +11,7 @@ install_module() {
 }
 
 link_module() {
-  ensure_managed_block "$HOME/.zshrc" "zsh-compinit" $'autoload -Uz compinit\ncompinit'
+  remove_managed_block "$HOME/.zshrc" "zsh-compinit"
   stow_module_if_needed "$MODULE_DIR"
 }
 
@@ -24,12 +24,19 @@ status_module() {
   status_init
 
   STATUS_INSTALLED="yes"
-  STATUS_NOTE="zsh completion uses built-in shell support."
+  STATUS_NOTE="Completion setup is owned by the zsh module."
 
   if managed_block_present "$HOME/.zshrc" "zsh-compinit"; then
-    STATUS_LINKED="yes"
-  else
     STATUS_LINKED="no"
+    STATUS_NOTE="Legacy compinit block still exists in ~/.zshrc."
+  elif module_has_stow_payload "$MODULE_DIR"; then
+    if module_payload_linked "$MODULE_DIR"; then
+      STATUS_LINKED="yes"
+    else
+      STATUS_LINKED="no"
+    fi
+  else
+    STATUS_LINKED="na"
   fi
 
   status_emit

@@ -101,6 +101,9 @@ dist
 # vitepress build output
 **/.vitepress/dist
 
+# local shell overrides
+zsh/.config/zsh/90-local.zsh
+
 # vitepress cache directory
 **/.vitepress/cache
 

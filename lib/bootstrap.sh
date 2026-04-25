@@ -266,7 +266,11 @@ module_payload_linked() {
     rel="${item#$module_dir/}"
     target="$HOME/$rel"
 
-    if [[ ! -L "$target" ]]; then
+    if [[ ! -e "$target" && ! -L "$target" ]]; then
+      return 1
+    fi
+
+    if [[ ! "$item" -ef "$target" ]]; then
       return 1
     fi
   done < <(

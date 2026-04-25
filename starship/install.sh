@@ -11,7 +11,7 @@ install_module() {
 }
 
 link_module() {
-  ensure_managed_block "$HOME/.zshrc" "starship-init" 'eval "$(starship init zsh)"'
+  remove_managed_block "$HOME/.zshrc" "starship-init"
   stow_module_if_needed "$MODULE_DIR"
 }
 
@@ -26,16 +26,23 @@ status_module() {
 
   if brew_formula_installed starship; then
     STATUS_INSTALLED="yes"
-    STATUS_NOTE="Starship is installed."
+    STATUS_NOTE="Starship is installed; shell startup is owned by the zsh module."
   else
     STATUS_INSTALLED="no"
     STATUS_NOTE="Starship is not installed yet."
   fi
 
   if managed_block_present "$HOME/.zshrc" "starship-init"; then
-    STATUS_LINKED="yes"
-  else
     STATUS_LINKED="no"
+    STATUS_NOTE="Legacy Starship init block still exists in ~/.zshrc."
+  elif module_has_stow_payload "$MODULE_DIR"; then
+    if module_payload_linked "$MODULE_DIR"; then
+      STATUS_LINKED="yes"
+    else
+      STATUS_LINKED="no"
+    fi
+  else
+    STATUS_LINKED="na"
   fi
 
   status_emit

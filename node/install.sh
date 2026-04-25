@@ -16,7 +16,7 @@ install_module() {
 }
 
 link_module() {
-  ensure_managed_block "$HOME/.zshrc" "fnm-init" 'eval "$(fnm env --use-on-cd --shell zsh)"'
+  remove_managed_block "$HOME/.zshrc" "fnm-init"
   stow_module_if_needed "$MODULE_DIR"
 }
 
@@ -34,7 +34,7 @@ status_module() {
     eval "$(fnm env --shell bash 2>/dev/null || true)"
     if [[ "$(fnm current 2>/dev/null || printf 'system')" != "system" ]]; then
       STATUS_INSTALLED="yes"
-      STATUS_NOTE="fnm and a Node.js runtime are installed."
+      STATUS_NOTE="fnm and a Node.js runtime are installed; shell startup is owned by the zsh module."
     else
       STATUS_INSTALLED="no"
       STATUS_NOTE="fnm is installed, but no Node.js runtime is active."
@@ -45,9 +45,16 @@ status_module() {
   fi
 
   if managed_block_present "$HOME/.zshrc" "fnm-init"; then
-    STATUS_LINKED="yes"
-  else
     STATUS_LINKED="no"
+    STATUS_NOTE="Legacy fnm init block still exists in ~/.zshrc."
+  elif module_has_stow_payload "$MODULE_DIR"; then
+    if module_payload_linked "$MODULE_DIR"; then
+      STATUS_LINKED="yes"
+    else
+      STATUS_LINKED="no"
+    fi
+  else
+    STATUS_LINKED="na"
   fi
 
   status_emit

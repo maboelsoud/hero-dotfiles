@@ -17,19 +17,10 @@ has_any_shellenv_line() {
 }
 
 link_module() {
-  local brew_path
-
-  brew_path="$(brew_bin)" || fail "Homebrew was not found during brew link step."
-
   if managed_block_present "$HOME/.zprofile" "homebrew-shellenv"; then
-    info "Managed Homebrew shellenv block already present."
-  elif has_any_shellenv_line; then
-    warn "Found an existing Homebrew shellenv line in $HOME/.zprofile; skipping duplicate managed block."
-  else
-    ensure_managed_block "$HOME/.zprofile" "homebrew-shellenv" "eval \"\$($brew_path shellenv)\""
+    remove_managed_block "$HOME/.zprofile" "homebrew-shellenv"
   fi
 
-  setup_brew_env
   stow_module_if_needed "$MODULE_DIR"
 }
 
@@ -44,19 +35,20 @@ status_module() {
 
   if brew_bin >/dev/null 2>&1; then
     STATUS_INSTALLED="yes"
-    STATUS_NOTE="Homebrew is available."
+    STATUS_NOTE="Homebrew is available; shell startup is owned by the zsh module."
   else
     STATUS_INSTALLED="no"
     STATUS_NOTE="Homebrew is not installed yet."
   fi
 
   if managed_block_present "$HOME/.zprofile" "homebrew-shellenv"; then
-    STATUS_LINKED="yes"
+    STATUS_LINKED="no"
+    STATUS_NOTE="Legacy Homebrew shellenv block still exists in ~/.zprofile."
   elif has_any_shellenv_line; then
-    STATUS_LINKED="yes"
+    STATUS_LINKED="na"
     STATUS_NOTE="Homebrew is available with an existing unmanaged shellenv line."
   else
-    STATUS_LINKED="no"
+    STATUS_LINKED="na"
   fi
 
   status_emit
