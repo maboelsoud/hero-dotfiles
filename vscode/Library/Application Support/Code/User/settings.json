@@ -1,0 +1,57 @@
+{
+    "workbench.colorTheme": "Panda Syntax",
+    "git.autofetch": true,
+    "codesandbox.currentWorkspace": "ws_4cPTHTCyvH2RhvWq5zsUem",
+    "remote.SSH.remotePlatform": {
+        "sandbox.frtg93.csb": "linux",
+        "sandbox.53t43n.csb": "linux"
+    },
+    "github.copilot.enable": {
+        "*": false,
+        "plaintext": false,
+        "markdown": false,
+        "scminput": false,
+        "typescript": false
+    },
+    "workbench.preferredDarkColorTheme": "Panda Syntax",
+    "workbench.preferredLightColorTheme": "Good Taste",
+    "window.autoDetectColorScheme": true,
+    "terminal.integrated.defaultProfile.osx": "zsh",
+    "terminal.external.osxExec": "Hyper.app",
+    "terminal.explorerKind": "external",
+    "terminal.integrated.customGlyphs": false,
+    "terminal.integrated.env.osx": {},
+    "git.confirmSync": false,
+    "eslint.format.enable": true,
+    "eslint.runtime": "",
+    "[typescriptreact]": {
+        "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+    },
+    "roo-cline.allowedCommands": [
+        "npm test",
+        "npm install",
+        "tsc",
+        "git log",
+        "git diff",
+        "git show"
+    ],
+    "continue.enableTabAutocomplete": false,
+    "turboConsoleLog.includeLineNum": true,
+    "turboConsoleLog.includeFilename": true,
+    "turboConsoleLog.addSemicolonInTheEnd": true,
+    "github.copilot.selectedCompletionModel": "",
+    "codeLogPlus.highlightColor": "#FFD700",
+    "codeLogPlus.customLogTemplates": [
+        {
+            "language": "javascript",
+            "template": "{{{logCommand}}}({{{quote}}}{{{logMessagePrefix}}}{{{fileName}}}:{{{lineNumber}}} → {{{variableName}}}{{{quote}}});\n"
+        },
+        {
+            "language": "python",
+            "template": "{{{indent}}}{{{logCommand}}}(f{{{quote}}}{{{logMessagePrefix}}} {{{fileName}}}:{{{lineNumber}}} → {{{functionName}}} | {{{variableName}}}{{{quote}}}, {{{variableName}}})\n"
+        }
+    ],
+    "codeLogPlus.logMessagePrefix": "🐍 ",
+    "github.copilot.nextEditSuggestions.enabled": true,
+    "chat.viewSessions.orientation": "stacked"
+}

@@ -20,7 +20,9 @@ DEFAULT_MODULES=(
   node
   npm
   vim
+  vscode
   docker
+  cursor
   ghostty
   aws
   gcp

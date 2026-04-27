@@ -156,6 +156,19 @@ ensure_brew_cask() {
   fi
 }
 
+resolve_first_existing_path() {
+  local candidate
+
+  for candidate in "$@"; do
+    if [[ -n "$candidate" && -x "$candidate" ]]; then
+      printf '%s\n' "$candidate"
+      return 0
+    fi
+  done
+
+  return 1
+}
+
 ensure_dir() {
   local dir="$1"
   mkdir -p "$dir"
@@ -280,6 +293,7 @@ module_payload_linked() {
       ! -name 'install.sh' \
       ! -name '.stow-local-ignore' \
       ! -name '.DS_Store' \
+      ! -name 'extensions.txt' \
       -print0
   )
 
@@ -306,6 +320,62 @@ stow_module_if_needed() {
   (
     cd "$repo_root"
     stow -Rv -t "$HOME" "$module_name"
+  )
+}
+
+stow_module_no_folding_if_needed() {
+  local module_dir="$1"
+  local repo_root module_name
+
+  repo_root="$(dirname "$module_dir")"
+  module_name="$(basename "$module_dir")"
+
+  if ! command -v stow >/dev/null 2>&1; then
+    fail "stow is required for linking module '$module_name'."
+  fi
+
+  if ! module_has_stow_payload "$module_dir"; then
+    info "Skipping stow for $module_name; no dotfiles to link yet."
+    return 0
+  fi
+
+  info "Stowing module without folding: $module_name"
+  (
+    cd "$repo_root"
+    stow -Rv --no-folding -t "$HOME" "$module_name"
+  )
+}
+
+backup_conflicting_module_targets() {
+  local module_dir="$1"
+  local timestamp item rel target backup_target
+
+  timestamp="$(date +%Y%m%d-%H%M%S)"
+
+  while IFS= read -r -d '' item; do
+    rel="${item#$module_dir/}"
+    target="$HOME/$rel"
+
+    if [[ ! -e "$target" && ! -L "$target" ]]; then
+      continue
+    fi
+
+    if [[ "$item" -ef "$target" ]]; then
+      continue
+    fi
+
+    backup_target="${target}.pre-hero-dotfiles-${timestamp}"
+    info "Backing up existing target before stow: $target -> $backup_target"
+    mv "$target" "$backup_target"
+  done < <(
+    find "$module_dir" \
+      -mindepth 1 \
+      \( -type f -o -type l \) \
+      ! -name 'install.sh' \
+      ! -name '.stow-local-ignore' \
+      ! -name '.DS_Store' \
+      ! -name 'extensions.txt' \
+      -print0
   )
 }
 
@@ -361,6 +431,24 @@ remove_brew_cask_if_present() {
   else
     info "brew cask not installed: $cask"
   fi
+}
+
+install_extensions_from_file() {
+  local cli_bin="$1"
+  local extensions_file="$2"
+  local extension
+
+  [[ -x "$cli_bin" ]] || fail "Extension CLI not found or not executable: $cli_bin"
+  [[ -f "$extensions_file" ]] || {
+    info "No extensions file found at $extensions_file; skipping extension install."
+    return 0
+  }
+
+  while IFS= read -r extension || [[ -n "$extension" ]]; do
+    [[ -n "$extension" ]] || continue
+    info "Installing extension: $extension"
+    "$cli_bin" --install-extension "$extension"
+  done <"$extensions_file"
 }
 
 status_init() {

@@ -10,7 +10,7 @@ source "$MODULE_DIR/../lib/bootstrap.sh"
 install_module() {
   ensure_brew_formula uv
   info "Installing Python $PYTHON_VERSION with uv."
-  uv python install "$PYTHON_VERSION"
+  uv python install "$PYTHON_VERSION" --default
 }
 
 link_module() {
