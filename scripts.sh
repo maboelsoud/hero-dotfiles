@@ -21,6 +21,7 @@ DEFAULT_MODULES=(
   npm
   vim
   docker
+  ghostty
   aws
   gcp
   ssh

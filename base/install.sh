@@ -16,11 +16,24 @@ BASE_FORMULAS=(
   ripgrep
 )
 
+BASE_CASKS=(
+  font-hack-nerd-font
+  font-0xproto-nerd-font
+  font-caskaydia-cove-nerd-font
+  font-iosevka-nerd-font
+  ghostty
+)
+
 install_module() {
   local formula
+  local cask
 
   for formula in "${BASE_FORMULAS[@]}"; do
     ensure_brew_formula "$formula"
+  done
+
+  for cask in "${BASE_CASKS[@]}"; do
+    ensure_brew_cask "$cask"
   done
 }
 
@@ -30,16 +43,22 @@ link_module() {
 
 uninstall_module() {
   local formula
+  local cask
 
   unstow_module_if_needed "$MODULE_DIR"
 
   for formula in "${BASE_FORMULAS[@]}"; do
     remove_brew_formula_if_present "$formula"
   done
+
+  for cask in "${BASE_CASKS[@]}"; do
+    remove_brew_cask_if_present "$cask"
+  done
 }
 
 status_module() {
   local formula
+  local cask
   local missing=()
 
   status_init
@@ -50,9 +69,15 @@ status_module() {
     fi
   done
 
+  for cask in "${BASE_CASKS[@]}"; do
+    if ! brew_cask_installed "$cask"; then
+      missing+=("$cask")
+    fi
+  done
+
   if [[ "${#missing[@]}" -eq 0 ]]; then
     STATUS_INSTALLED="yes"
-    STATUS_NOTE="Base CLI tools are installed."
+    STATUS_NOTE="Base CLI tools and fonts are installed."
   else
     STATUS_INSTALLED="no"
     STATUS_NOTE="Missing: ${missing[*]}"

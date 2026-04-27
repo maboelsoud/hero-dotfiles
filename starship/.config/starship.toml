@@ -1,0 +1,82 @@
+"$schema" = "https://starship.rs/config-schema.json"
+
+format = """
+[ $directory ](bg:cyan fg:black)\
+${custom.xero_git}\
+$line_break\
+$character\
+"""
+
+right_format = ""
+add_newline = false
+command_timeout = 1000
+
+[directory]
+style = "bg:cyan fg:black"
+format = "[$path]($style)"
+truncation_length = 3
+truncation_symbol = "../"
+truncate_to_repo = false
+home_symbol = "~"
+read_only = " 󰌾"
+read_only_style = "bg:cyan fg:red"
+
+[custom.xero_git]
+description = "Xero-inspired git prompt segment"
+require_repo = true
+when = true
+shell = ["bash", "--noprofile", "--norc"]
+command = """
+ref=$(git name-rev --name-only HEAD 2>/dev/null)
+ref=$(printf '%s' "$ref" | sed 's!remotes/!!;s!undefined!merging!')
+status=$(git status --porcelain=v1 --branch 2>/dev/null)
+dirty=""
+branch_state=$(printf '%s\n' "$status" | sed -n '1p')
+worktree_state=$(printf '%s\n' "$status" | sed -n '2,$p')
+
+[[ -n "$worktree_state" ]] && dirty="↯"
+
+case "$branch_state" in
+  *ahead*behind*|*behind*ahead*|*diverged*) stat="↕" ;;
+  *ahead*) stat="↑" ;;
+  *behind*) stat="↓" ;;
+  *) stat="" ;;
+esac
+printf '%s%s%s' "$ref" "$dirty" "$stat"
+"""
+format = "[█▓▒░ ](bg:#d386d9 fg:cyan)[$output ](bg:#d386d9 fg:black)[█▓▒░](fg:#d386d9)"
+
+[character]
+success_symbol = "[ ](fg:#7dd3fc)"
+error_symbol = "[ ](fg:#f87171)"
+vimcmd_symbol = "[ ](fg:#facc15)"
+
+[cmd_duration]
+disabled = true
+
+[package]
+disabled = true
+
+[nodejs]
+disabled = true
+
+[python]
+disabled = true
+
+[golang]
+disabled = true
+
+[rust]
+disabled = true
+
+[java]
+disabled = true
+
+[docker_context]
+disabled = true
+
+[aws]
+disabled = true
+
+[gcloud]
+disabled = true
