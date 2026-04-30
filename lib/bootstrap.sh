@@ -256,6 +256,11 @@ brew_cask_installed() {
   brew_bin >/dev/null 2>&1 && brew list --cask "$cask" >/dev/null 2>&1
 }
 
+macos_app_bundle_installed() {
+  local app_name="$1"
+  [[ -d "/Applications/${app_name}.app" ]]
+}
+
 module_has_stow_payload() {
   local module_dir="$1"
 

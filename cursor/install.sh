@@ -33,12 +33,12 @@ uninstall_module() {
 status_module() {
   status_init
 
-  if brew_cask_installed cursor; then
+  if brew_cask_installed cursor || macos_app_bundle_installed "Cursor"; then
     STATUS_INSTALLED="yes"
     STATUS_NOTE="Cursor is installed."
   else
     STATUS_INSTALLED="no"
-    STATUS_NOTE="Cursor is not installed yet."
+    STATUS_NOTE="Cursor is not installed via Homebrew or /Applications yet."
   fi
 
   if module_has_stow_payload "$MODULE_DIR"; then

@@ -33,12 +33,12 @@ uninstall_module() {
 status_module() {
   status_init
 
-  if brew_cask_installed visual-studio-code; then
+  if brew_cask_installed visual-studio-code || macos_app_bundle_installed "Visual Studio Code"; then
     STATUS_INSTALLED="yes"
     STATUS_NOTE="Visual Studio Code is installed."
   else
     STATUS_INSTALLED="no"
-    STATUS_NOTE="Visual Studio Code is not installed yet."
+    STATUS_NOTE="Visual Studio Code is not installed via Homebrew or /Applications yet."
   fi
 
   if module_has_stow_payload "$MODULE_DIR"; then
