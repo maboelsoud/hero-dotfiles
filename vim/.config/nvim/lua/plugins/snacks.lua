@@ -20,6 +20,7 @@ return {
 			sources = {
 				explorer = {
 					hidden = true, -- Show hidden files in explorer
+					ignored = true, -- Show gitignored files like .env in explorer
 				},
 			},
 		},
