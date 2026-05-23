@@ -2,12 +2,14 @@ anysphere.cursorpyright
 anysphere.remote-ssh
 chakrounanas.turbo-console-log
 dbaeumer.vscode-eslint
+detachhead.basedpyright
 github.vscode-github-actions
 github.vscode-pull-request-github
 hashicorp.terraform
 imgildev.vscode-code-log-plus
 kgrubb.flamingo-nebula
 mhutchie.git-graph
+mikestead.dotenv
 ms-python.debugpy
 ms-python.python
 ms-python.vscode-python-envs
@@ -15,5 +17,8 @@ ms-vscode.sublime-keybindings
 oderwat.indent-rainbow
 openai.chatgpt
 pr1sm8.theme-panda
+redhat.vscode-yaml
 ritwickdey.liveserver
+tamasfe.even-better-toml
 vscodevim.vim
+yzhang.markdown-all-in-one
